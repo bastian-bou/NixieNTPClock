@@ -119,8 +119,6 @@ Wire Wire Line
 	2000 6150 2000 5850
 Connection ~ 2000 6150
 Wire Wire Line
-	1050 5450 1450 5450
-Wire Wire Line
 	1450 5450 2000 5450
 Wire Wire Line
 	2000 5450 2000 5550
@@ -462,4 +460,53 @@ Wire Wire Line
 Connection ~ 4900 6200
 Wire Wire Line
 	4900 6200 5200 6200
+$Comp
+L Connector:Barrel_Jack J?
+U 1 1 5DBDBE53
+P 750 5550
+F 0 "J?" H 807 5875 50  0000 C CNN
+F 1 "Barrel_Jack" H 807 5784 50  0000 C CNN
+F 2 "" H 800 5510 50  0001 C CNN
+F 3 "~" H 800 5510 50  0001 C CNN
+	1    750  5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBDF0BF
+P 1200 5800
+F 0 "#PWR?" H 1200 5550 50  0001 C CNN
+F 1 "GND" H 1205 5627 50  0000 C CNN
+F 2 "" H 1200 5800 50  0001 C CNN
+F 3 "" H 1200 5800 50  0001 C CNN
+	1    1200 5800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1200 5800 1200 5650
+Wire Wire Line
+	1200 5650 1050 5650
+Wire Wire Line
+	1050 5450 1200 5450
+$Comp
+L power:+12V #PWR?
+U 1 1 5DBE2C46
+P 1200 5350
+F 0 "#PWR?" H 1200 5200 50  0001 C CNN
+F 1 "+12V" H 1215 5523 50  0000 C CNN
+F 2 "" H 1200 5350 50  0001 C CNN
+F 3 "" H 1200 5350 50  0001 C CNN
+	1    1200 5350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1200 5350 1200 5450
+Connection ~ 1200 5450
+Wire Wire Line
+	1200 5450 1450 5450
+Text GLabel 6500 6200 2    50   Output ~ 0
+HV
+Wire Wire Line
+	6500 6200 6250 6200
+Connection ~ 6250 6200
 $EndSCHEMATC
