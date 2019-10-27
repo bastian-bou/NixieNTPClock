@@ -218,7 +218,7 @@ F 0 "Q?" H 4950 6350 50  0000 L CNN
 F 1 "Q_NMOS_GDS" H 5200 6300 50  0000 L CNN
 F 2 "TO_SOT_Packages_SMD:TO-252-2" H 5300 6650 50  0001 C CNN
 F 3 "~" H 5100 6550 50  0001 C CNN
-F 4 "2453852" H 5100 6550 50  0001 C CNN "Farnel"
+F 4 "2453852" H 5100 6550 50  0001 C CNN "Farnell"
 	1    5100 6550
 	1    0    0    -1  
 $EndComp
@@ -288,7 +288,7 @@ F 0 "D?" H 5550 5984 50  0000 C CNN
 F 1 "MBRS3200T3G" H 5550 6075 50  0000 C CNN
 F 2 "" H 5550 6200 50  0001 C CNN
 F 3 "~" H 5550 6200 50  0001 C CNN
-F 4 "1838812" H 5550 6200 50  0001 C CNN "Farnel"
+F 4 "1838812" H 5550 6200 50  0001 C CNN "Farnell"
 	1    5550 6200
 	-1   0    0    1   
 $EndComp
@@ -506,11 +506,362 @@ F 0 "Q?" H 4050 6900 50  0000 L CNN
 F 1 "BC850" H 3950 6650 50  0000 L CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 4400 6725 50  0001 L CIN
 F 3 "http://www.infineon.com/dgdl/Infineon-BC847SERIES_BC848SERIES_BC849SERIES_BC850SERIES-DS-v01_01-en.pdf?fileId=db3a304314dca389011541d4630a1657" H 4200 6800 50  0001 L CNN
-F 4 "1081241" H 4200 6800 50  0001 C CNN "Farnel"
+F 4 "1081241" H 4200 6800 50  0001 C CNN "Farnell"
 	1    4200 6800
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	4100 6600 4100 6450
 Connection ~ 4100 6450
+$Comp
+L 74xx_IEEE:74141 U?
+U 1 1 5DB613FC
+P 3800 2300
+F 0 "U?" H 3800 3041 50  0000 C CNN
+F 1 "K155ID1" H 3800 2950 50  0000 C CNN
+F 2 "Housings_DIP:DIP-16_W7.62mm_Socket" H 3800 2300 50  0001 C CNN
+F 3 "" H 3800 2300 50  0001 C CNN
+	1    3800 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L nixieValve:ZM1242 U?
+U 1 1 5DB66E81
+P 5200 2250
+F 0 "U?" H 5250 2875 50  0000 C CNN
+F 1 "ZM1242" H 5250 2784 50  0000 C CNN
+F 2 "" H 5200 2250 50  0001 C CNN
+F 3 "" H 5200 2250 50  0001 C CNN
+	1    5200 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L nixieValve:ZM1242 U?
+U 1 1 5DB68808
+P 6700 2250
+F 0 "U?" H 6750 2875 50  0000 C CNN
+F 1 "ZM1242" H 6750 2784 50  0000 C CNN
+F 2 "" H 6700 2250 50  0001 C CNN
+F 3 "" H 6700 2250 50  0001 C CNN
+	1    6700 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L nixieValve:ZM1242 U?
+U 1 1 5DB6908D
+P 8200 2250
+F 0 "U?" H 8250 2875 50  0000 C CNN
+F 1 "ZM1242" H 8250 2784 50  0000 C CNN
+F 2 "" H 8200 2250 50  0001 C CNN
+F 3 "" H 8200 2250 50  0001 C CNN
+	1    8200 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L nixieValve:ZM1242 U?
+U 1 1 5DB6992D
+P 9700 2250
+F 0 "U?" H 9750 2875 50  0000 C CNN
+F 1 "ZM1242" H 9750 2784 50  0000 C CNN
+F 2 "" H 9700 2250 50  0001 C CNN
+F 3 "" H 9700 2250 50  0001 C CNN
+	1    9700 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4400 1850 4900 1850
+Wire Wire Line
+	4400 1950 4900 1950
+Wire Wire Line
+	4400 2050 4900 2050
+Wire Wire Line
+	4400 2150 4900 2150
+Wire Wire Line
+	4400 2250 4900 2250
+Wire Wire Line
+	4400 2350 4900 2350
+Wire Wire Line
+	4400 2450 4900 2450
+Wire Wire Line
+	4400 2550 4900 2550
+Wire Wire Line
+	4400 2650 4900 2650
+Wire Wire Line
+	4400 2750 4900 2750
+Text Label 4600 1850 0    50   ~ 0
+0
+Text Label 4600 1950 0    50   ~ 0
+1
+Text Label 4600 2050 0    50   ~ 0
+2
+Text Label 4600 2150 0    50   ~ 0
+3
+Text Label 4600 2250 0    50   ~ 0
+4
+Text Label 4600 2350 0    50   ~ 0
+5
+Text Label 4600 2450 0    50   ~ 0
+6
+Text Label 4600 2550 0    50   ~ 0
+7
+Text Label 4600 2650 0    50   ~ 0
+8
+Text Label 4600 2750 0    50   ~ 0
+9
+Wire Wire Line
+	6400 1850 6300 1850
+Wire Wire Line
+	6400 1950 6300 1950
+Wire Wire Line
+	6400 2050 6300 2050
+Wire Wire Line
+	6400 2150 6300 2150
+Wire Wire Line
+	6400 2250 6300 2250
+Wire Wire Line
+	6400 2350 6300 2350
+Wire Wire Line
+	6400 2450 6300 2450
+Wire Wire Line
+	6400 2550 6300 2550
+Wire Wire Line
+	6400 2650 6300 2650
+Wire Wire Line
+	6400 2750 6300 2750
+Wire Wire Line
+	6400 2850 6300 2850
+Text Label 6300 1850 0    50   ~ 0
+0
+Text Label 6300 1950 0    50   ~ 0
+1
+Text Label 6300 2050 0    50   ~ 0
+2
+Text Label 6300 2150 0    50   ~ 0
+3
+Text Label 6300 2250 0    50   ~ 0
+4
+Text Label 6300 2350 0    50   ~ 0
+5
+Text Label 6300 2450 0    50   ~ 0
+6
+Text Label 6300 2550 0    50   ~ 0
+7
+Text Label 6300 2650 0    50   ~ 0
+8
+Text Label 6300 2750 0    50   ~ 0
+9
+Wire Wire Line
+	7900 1850 7800 1850
+Wire Wire Line
+	7900 1950 7800 1950
+Wire Wire Line
+	7900 2050 7800 2050
+Wire Wire Line
+	7900 2150 7800 2150
+Wire Wire Line
+	7900 2250 7800 2250
+Wire Wire Line
+	7900 2350 7800 2350
+Wire Wire Line
+	7900 2450 7800 2450
+Wire Wire Line
+	7900 2550 7800 2550
+Wire Wire Line
+	7900 2650 7800 2650
+Wire Wire Line
+	7900 2750 7800 2750
+Wire Wire Line
+	7900 2850 7800 2850
+Wire Wire Line
+	9400 1850 9300 1850
+Wire Wire Line
+	9400 1950 9300 1950
+Wire Wire Line
+	9400 2050 9300 2050
+Wire Wire Line
+	9400 2150 9300 2150
+Wire Wire Line
+	9400 2250 9300 2250
+Wire Wire Line
+	9400 2350 9300 2350
+Wire Wire Line
+	9400 2450 9300 2450
+Wire Wire Line
+	9400 2550 9300 2550
+Wire Wire Line
+	9400 2650 9300 2650
+Wire Wire Line
+	9400 2750 9300 2750
+Wire Wire Line
+	9400 2850 9300 2850
+Text Label 7800 1850 0    50   ~ 0
+0
+Text Label 7800 1950 0    50   ~ 0
+1
+Text Label 7800 2050 0    50   ~ 0
+2
+Text Label 7800 2150 0    50   ~ 0
+3
+Text Label 7800 2250 0    50   ~ 0
+4
+Text Label 7800 2350 0    50   ~ 0
+5
+Text Label 7800 2450 0    50   ~ 0
+6
+Text Label 7800 2550 0    50   ~ 0
+7
+Text Label 7800 2650 0    50   ~ 0
+8
+Text Label 7800 2750 0    50   ~ 0
+9
+Text Label 9300 1850 0    50   ~ 0
+0
+Text Label 9300 1950 0    50   ~ 0
+1
+Text Label 9300 2050 0    50   ~ 0
+2
+Text Label 9300 2150 0    50   ~ 0
+3
+Text Label 9300 2250 0    50   ~ 0
+4
+Text Label 9300 2350 0    50   ~ 0
+5
+Text Label 9300 2450 0    50   ~ 0
+6
+Text Label 9300 2550 0    50   ~ 0
+7
+Text Label 9300 2650 0    50   ~ 0
+8
+Text Label 9300 2750 0    50   ~ 0
+9
+$Comp
+L Isolator:TLP627-4 U?
+U 1 1 5DDB9DD3
+P 5350 1200
+F 0 "U?" H 5350 1525 50  0000 C CNN
+F 1 "TLP627-4" H 5350 1434 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 5050 1000 50  0001 L CIN
+F 3 "https://toshiba.semicon-storage.com/info/docget.jsp?did=16914&prodName=TLP627" H 5350 1200 50  0001 L CNN
+F 4 "1225840" H 5350 1200 50  0001 C CNN "Farnell"
+	1    5350 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Isolator:TLP627-4 U?
+U 2 1 5DDD9CF0
+P 6850 1200
+F 0 "U?" H 6850 1525 50  0000 C CNN
+F 1 "TLP627-4" H 6850 1434 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6550 1000 50  0001 L CIN
+F 3 "https://toshiba.semicon-storage.com/info/docget.jsp?did=16914&prodName=TLP627" H 6850 1200 50  0001 L CNN
+	2    6850 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Isolator:TLP627-4 U?
+U 3 1 5DDDB407
+P 8350 1200
+F 0 "U?" H 8350 1525 50  0000 C CNN
+F 1 "TLP627-4" H 8350 1434 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 8050 1000 50  0001 L CIN
+F 3 "https://toshiba.semicon-storage.com/info/docget.jsp?did=16914&prodName=TLP627" H 8350 1200 50  0001 L CNN
+	3    8350 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Isolator:TLP627-4 U?
+U 4 1 5DDDDBF2
+P 9850 1200
+F 0 "U?" H 9850 1525 50  0000 C CNN
+F 1 "TLP627-4" H 9850 1434 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 9550 1000 50  0001 L CIN
+F 3 "https://toshiba.semicon-storage.com/info/docget.jsp?did=16914&prodName=TLP627" H 9850 1200 50  0001 L CNN
+	4    9850 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5DDF4B1D
+P 10850 1700
+F 0 "R?" H 10920 1746 50  0000 L CNN
+F 1 "R" H 10920 1655 50  0000 L CNN
+F 2 "" V 10780 1700 50  0001 C CNN
+F 3 "~" H 10850 1700 50  0001 C CNN
+	1    10850 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4950 1300 4950 1450
+Wire Wire Line
+	4950 1450 6450 1450
+Wire Wire Line
+	10850 1450 10850 1550
+Wire Wire Line
+	6450 1300 6450 1450
+Connection ~ 6450 1450
+Wire Wire Line
+	6450 1450 7950 1450
+Wire Wire Line
+	7950 1300 7950 1450
+Connection ~ 7950 1450
+Wire Wire Line
+	7950 1450 9450 1450
+Wire Wire Line
+	9450 1300 9450 1450
+Connection ~ 9450 1450
+Wire Wire Line
+	9450 1450 10850 1450
+$Comp
+L power:GND #PWR?
+U 1 1 5DE060AA
+P 10850 1950
+F 0 "#PWR?" H 10850 1700 50  0001 C CNN
+F 1 "GND" H 10855 1777 50  0000 C CNN
+F 2 "" H 10850 1950 50  0001 C CNN
+F 3 "" H 10850 1950 50  0001 C CNN
+	1    10850 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10850 1950 10850 1850
+Wire Wire Line
+	5750 1300 5800 1300
+Wire Wire Line
+	5800 1300 5800 2350
+Wire Wire Line
+	5600 2350 5800 2350
+Wire Wire Line
+	7250 1300 7300 1300
+Wire Wire Line
+	7300 1300 7300 2350
+Wire Wire Line
+	7100 2350 7300 2350
+Wire Wire Line
+	8750 1300 8800 1300
+Wire Wire Line
+	8800 1300 8800 2350
+Wire Wire Line
+	8600 2350 8800 2350
+Wire Wire Line
+	10250 1300 10300 1300
+Wire Wire Line
+	10300 1300 10300 2350
+Wire Wire Line
+	10100 2350 10300 2350
+Wire Wire Line
+	5750 1100 5750 650 
+Wire Wire Line
+	5750 650  7250 650 
+Wire Wire Line
+	7250 650  7250 1100
+Wire Wire Line
+	7250 650  8750 650 
+Wire Wire Line
+	8750 650  8750 1100
+Connection ~ 7250 650 
+Wire Wire Line
+	8750 650  10250 650 
+Wire Wire Line
+	10250 650  10250 1100
+Connection ~ 8750 650 
 $EndSCHEMATC

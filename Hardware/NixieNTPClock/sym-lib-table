@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name nixieValve)(type Legacy)(uri ${KIPRJMOD}/nixieValve.lib)(options "")(descr ""))
+)
