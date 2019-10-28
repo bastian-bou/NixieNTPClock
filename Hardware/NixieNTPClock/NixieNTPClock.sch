@@ -1305,6 +1305,7 @@ F 0 "U?" H 2400 4467 50  0000 C CNN
 F 1 "TPS562200" H 2400 4376 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-6" H 2450 3850 50  0001 L CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tps563200.pdf" H 2400 4100 50  0001 C CNN
+F 4 "2781737" H 2400 4100 50  0001 C CNN "Farnell"
 	1    2400 4100
 	1    0    0    -1  
 $EndComp
