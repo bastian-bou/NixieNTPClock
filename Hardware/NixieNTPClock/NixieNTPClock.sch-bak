@@ -1305,6 +1305,7 @@ F 0 "U?" H 2400 4467 50  0000 C CNN
 F 1 "TPS562200" H 2400 4376 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-23-6" H 2450 3850 50  0001 L CNN
 F 3 "http://www.ti.com/lit/ds/symlink/tps563200.pdf" H 2400 4100 50  0001 C CNN
+F 4 "2781737" H 2400 4100 50  0001 C CNN "Farnell"
 	1    2400 4100
 	1    0    0    -1  
 $EndComp
@@ -1617,4 +1618,168 @@ $EndComp
 Wire Wire Line
 	12800 4600 12800 4650
 Connection ~ 12800 4650
+$Comp
+L esp32:ESP32-nodeMCU U?
+U 1 1 5DBA550E
+P 9050 4650
+F 0 "U?" H 8800 5375 50  0000 C CNN
+F 1 "ESP32-nodeMCU" H 8800 5284 50  0000 C CNN
+F 2 "" H 8950 4650 50  0001 C CNN
+F 3 "" H 8950 4650 50  0001 C CNN
+	1    9050 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBA7C34
+P 9700 4150
+F 0 "#PWR?" H 9700 3900 50  0001 C CNN
+F 1 "GND" H 9705 3977 50  0000 C CNN
+F 2 "" H 9700 4150 50  0001 C CNN
+F 3 "" H 9700 4150 50  0001 C CNN
+	1    9700 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBA82CA
+P 9700 4750
+F 0 "#PWR?" H 9700 4500 50  0001 C CNN
+F 1 "GND" H 9705 4577 50  0000 C CNN
+F 2 "" H 9700 4750 50  0001 C CNN
+F 3 "" H 9700 4750 50  0001 C CNN
+	1    9700 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBA88C0
+P 7850 5850
+F 0 "#PWR?" H 7850 5600 50  0001 C CNN
+F 1 "GND" H 7855 5677 50  0000 C CNN
+F 2 "" H 7850 5850 50  0001 C CNN
+F 3 "" H 7850 5850 50  0001 C CNN
+	1    7850 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBA8D1B
+P 7850 5450
+F 0 "#PWR?" H 7850 5200 50  0001 C CNN
+F 1 "GND" H 7855 5277 50  0000 C CNN
+F 2 "" H 7850 5450 50  0001 C CNN
+F 3 "" H 7850 5450 50  0001 C CNN
+	1    7850 5450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 5450 8250 5450
+Wire Wire Line
+	7850 5850 8250 5850
+Wire Wire Line
+	9700 4750 9350 4750
+Wire Wire Line
+	9700 4150 9350 4150
+$Comp
+L Device:CP C?
+U 1 1 5DBDC8C4
+P 8050 6200
+F 0 "C?" H 8168 6246 50  0000 L CNN
+F 1 "CP" H 8168 6155 50  0000 L CNN
+F 2 "" H 8088 6050 50  0001 C CNN
+F 3 "~" H 8050 6200 50  0001 C CNN
+	1    8050 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5DBDE1CF
+P 8400 6200
+F 0 "C?" H 8515 6246 50  0000 L CNN
+F 1 "C" H 8515 6155 50  0000 L CNN
+F 2 "" H 8438 6050 50  0001 C CNN
+F 3 "~" H 8400 6200 50  0001 C CNN
+	1    8400 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBDE688
+P 8050 6350
+F 0 "#PWR?" H 8050 6100 50  0001 C CNN
+F 1 "GND" H 8150 6250 50  0000 C CNN
+F 2 "" H 8050 6350 50  0001 C CNN
+F 3 "" H 8050 6350 50  0001 C CNN
+	1    8050 6350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DBDEB32
+P 8400 6350
+F 0 "#PWR?" H 8400 6100 50  0001 C CNN
+F 1 "GND" H 8500 6250 50  0000 C CNN
+F 2 "" H 8400 6350 50  0001 C CNN
+F 3 "" H 8400 6350 50  0001 C CNN
+	1    8400 6350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 5950 8250 5950
+Wire Wire Line
+	8050 6050 8050 5950
+Wire Wire Line
+	8400 6050 8050 6050
+Connection ~ 8050 6050
+$Comp
+L power:+5V #PWR?
+U 1 1 5DC1C6E0
+P 8050 5750
+F 0 "#PWR?" H 8050 5600 50  0001 C CNN
+F 1 "+5V" H 8065 5923 50  0000 C CNN
+F 2 "" H 8050 5750 50  0001 C CNN
+F 3 "" H 8050 5750 50  0001 C CNN
+	1    8050 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 5750 8050 5950
+Connection ~ 8050 5950
+Text GLabel 5050 1000 0    50   Input ~ 0
+DIZ_H
+Text GLabel 6550 1000 0    50   Input ~ 0
+UNIT_H
+Text GLabel 8050 1000 0    50   Input ~ 0
+DIZ_M
+Text GLabel 9550 1000 0    50   Input ~ 0
+UNIT_M
+Text GLabel 4500 3050 0    50   Input ~ 0
+P_DIZ_H
+Wire Wire Line
+	4500 3050 4550 3050
+Connection ~ 4550 3050
+Text GLabel 6000 3050 0    50   Input ~ 0
+P_UNIT_H
+Text GLabel 7500 3050 0    50   Input ~ 0
+P_DIZ_M
+Text GLabel 9000 3050 0    50   Input ~ 0
+P_UNIT_M
+Wire Wire Line
+	9000 3050 9050 3050
+Connection ~ 9050 3050
+Wire Wire Line
+	7500 3050 7550 3050
+Connection ~ 7550 3050
+Wire Wire Line
+	6000 3050 6050 3050
+Connection ~ 6050 3050
+Text GLabel 2450 1750 0    50   Input ~ 0
+A
+Text GLabel 2450 2050 0    50   Input ~ 0
+B
+Text GLabel 2450 2350 0    50   Input ~ 0
+C
+Text GLabel 2450 2650 0    50   Input ~ 0
+D
 $EndSCHEMATC

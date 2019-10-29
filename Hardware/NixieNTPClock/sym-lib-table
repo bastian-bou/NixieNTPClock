@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name nixieValve)(type Legacy)(uri ${KIPRJMOD}/nixieValve.lib)(options "")(descr ""))
+  (lib (name esp32)(type Legacy)(uri ${KIPRJMOD}/esp32.lib)(options "")(descr ""))
 )
