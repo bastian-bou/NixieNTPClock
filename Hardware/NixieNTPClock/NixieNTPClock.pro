@@ -1,4 +1,4 @@
-update=22/05/2015 07:44:53
+update=mer. 30 oct. 2019 19:25:07 CET
 version=1
 last_client=kicad
 [general]
@@ -31,3 +31,13 @@ NetIExt=net
 version=1
 LibDir=
 [eeschema/libraries]
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=/home/bastian/Documents/NixieNTPClock/Hardware/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=Pcbnew
+SpiceAjustPassiveValues=0
+LabSize=79
+ERC_TestSimilarLabels=1
