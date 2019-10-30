@@ -5,10 +5,10 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title ""
-Date ""
-Rev ""
-Comp ""
+Title "Schéma Nixie NTP Clock"
+Date "2019-10-30"
+Rev "A"
+Comp "Bastian Bouchardon"
 Comment1 ""
 Comment2 ""
 Comment3 ""
