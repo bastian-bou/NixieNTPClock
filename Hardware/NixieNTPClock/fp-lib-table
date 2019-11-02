@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name NixieNTPClock)(type KiCad)(uri ${KIPRJMOD}/NixieNTPClock.pretty)(options "")(descr ""))
+)
