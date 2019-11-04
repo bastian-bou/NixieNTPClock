@@ -4,10 +4,11 @@
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include "debug.h"
 
 
 //Temperature sensor 
-#define TEMP        5
+#define TEMP        15
 //Tactile sensor
 #define TOUCH       4
 
@@ -44,12 +45,17 @@ boolean isTouch() {
 
 void setup() {
 
+#ifdef DEBUG
+  Serial.begin(115200);
+  debug_print("-----Start program-------\n\n\n");
+#endif
   init_IO();
 }
 
 void loop() {
   nixie.refreshTime();
   if (isTouch()) {
+    debug_print("Touch temp\n");
     float temp = getTemp();
     nixie.refreshTemp((int8_t)temp, (uint8_t)(temp - (int8_t)temp));
   }
