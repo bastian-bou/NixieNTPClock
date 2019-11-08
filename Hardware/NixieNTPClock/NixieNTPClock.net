@@ -1,8 +1,8 @@
 (export (version D)
   (design
     (source /home/bastian/Documents/NixieNTPClock/Hardware/NixieNTPClock/NixieNTPClock.sch)
-    (date "ven. 01 nov. 2019 23:21:40 CET")
-    (tool "Eeschema 5.1.4+dfsg1-1")
+    (date "ven. 08 nov. 2019 17:00:33 CET")
+    (tool "Eeschema 5.0.2-bee76a0~70~ubuntu18.10.1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
         (title "Schéma Nixie NTP Clock")
@@ -161,7 +161,7 @@
       (tstamp 5DB5C42D))
     (comp (ref U3)
       (value K155ID1)
-      (footprint Housings_DIP:DIP-16_W7.62mm_Socket)
+      (footprint Package_DIP:DIP-16_W7.62mm_Socket_LongPads)
       (libsource (lib 74xx_IEEE) (part 74141) (description ""))
       (sheetpath (names /) (tstamps /))
       (tstamp 5DB613FC))
