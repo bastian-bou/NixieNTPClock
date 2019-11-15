@@ -43,7 +43,6 @@ class NixieClock {
         void writeDigit(uint8_t digit);
         void resetAll();
         void refresh(dataDisplay type);
-        
     public:
         NixieClock();
         void setTime(uint8_t _hour, uint8_t _min, uint8_t _sec);
