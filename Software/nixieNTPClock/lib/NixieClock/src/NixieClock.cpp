@@ -1,4 +1,5 @@
 #include "NixieClock.h"
+#include "debug.h"
 
 NixieClock::NixieClock()
 {
@@ -54,7 +55,7 @@ void NixieClock::writeDigit(uint8_t digit)
     }
 }
 
-void refresh(dataDisplay type)
+void NixieClock::refresh(dataDisplay type)
 {
 #ifndef STATE_MACHINE
 
@@ -183,16 +184,16 @@ void NixieClock::refreshTime()
         if (sec >= 59) {
             sec = 0;
             min++;
-            debug_print("1 MINUTE\n");
+//            debug_print("1 MINUTE\n");
         }
         if (min >= 59) {
             min = 0;
             hour++;
-            debug_print("1 HOUR\n");
+//            debug_print("1 HOUR\n");
         }
         if (hour >= 24) {
             hour = 0;
-            debug_print("1 DAY\n");
+//            debug_print("1 DAY\n");
         }
         refresh(TIME);
     }
