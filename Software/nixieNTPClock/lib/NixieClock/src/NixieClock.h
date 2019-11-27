@@ -35,6 +35,8 @@ class NixieClock {
         uint8_t hour;
         uint8_t min;
         uint8_t sec;
+        int8_t  entierTemp;
+        uint8_t decTemp;
         int64_t previousGetTime;
         int64_t previousSec;
         int64_t previousNixieUpDuration;
@@ -50,7 +52,7 @@ class NixieClock {
         void setMin(uint8_t _min);
         void setSec(uint8_t sec);
         
-        void refreshTime();
+        boolean refreshTime();
         void refreshTemp(int8_t entier, uint8_t decimal);
 };
 

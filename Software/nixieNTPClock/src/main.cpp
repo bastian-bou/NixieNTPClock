@@ -6,6 +6,11 @@
 #include <DallasTemperature.h>
 #include "debug.h"
 
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+#include <WiFiManager.h>
+
 
 //Temperature sensor 
 #define TEMP        15
@@ -21,6 +26,14 @@ DallasTemperature sensors(&oneWire);
 
 // Create nixie object
 NixieClock nixie;
+
+// WifiManager object
+WiFiManager wifiManager;
+
+// ntpServer object
+WiFiUDP ntpUDP;
+
+NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 0, 0);
 
 
 void init_IO() {
@@ -43,17 +56,41 @@ boolean isTouch() {
   else return false;
 }
 
+void getNtpTime() {
+  timeClient.update();
+  nixie.setTime(
+    (uint8_t)timeClient.getHours(), 
+    (uint8_t)timeClient.getMinutes(),
+    (uint8_t)timeClient.getSeconds());
+}
+
 void setup() {
+  boolean res;
 
 #ifdef DEBUG
   Serial.begin(115200);
   debug_print("-----Start program-------\n\n\n");
 #endif
   init_IO();
+
+  res = wifiManager.autoConnect("horlogeNIXIE", "123456789");
+
+  if(!res) {
+        debug_print("Failed to connect\n");
+        ESP.restart();
+    } 
+    else {
+        //if you get here you have connected to the WiFi    
+        debug_print("connected...:)\n");
+    }
+
+  timeClient.begin();
 }
 
 void loop() {
-  nixie.refreshTime();
+  if (nixie.refreshTime()) {
+    getNtpTime();
+  }
   if (isTouch()) {
     debug_print("Touch temp\n");
     float temp = getTemp();

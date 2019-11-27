@@ -19,10 +19,11 @@ NixieClock::NixieClock()
     resetAll();
 
     previousNixieUpDuration = previousSec = previousGetTime = esp_timer_get_time();
-    sec = min = hour = 0;
+    sec = min = hour = entierTemp = decTemp = 0;
 
     states = DOZENHOUR;
 }
+
 
 void NixieClock::setTime(uint8_t _hour, uint8_t _min, uint8_t _sec)
 {
@@ -57,22 +58,31 @@ void NixieClock::writeDigit(uint8_t digit)
 
 void NixieClock::refresh(dataDisplay type)
 {
+    if (type == TEMP) {
+        digitalWrite(P_UNIT_H, HIGH);
+        if (entierTemp < 0) digitalWrite (P_DOZ_H, HIGH);
+        else digitalWrite (P_DOZ_H, LOW);
+    }
 #ifndef STATE_MACHINE
 
     digitalWrite(DOZ_H, HIGH);
-    writeDigit(hour / 10); // dozen of hour
+    // dozen of hour
+    (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
     digitalWrite(DOZ_H, LOW);
 
     digitalWrite(UNIT_H, HIGH);
-    writeDigit(hour % 10); // unit of hour
+    // unit of hour
+    (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
     digitalWrite(UNIT_H, LOW);
 
     digitalWrite(DOZ_M, HIGH);
-    writeDigit(min / 10); // dozen of minute
+    // dozen of minute
+    (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
     digitalWrite(DOZ_M, LOW);
 
     digitalWrite(UNIT_M, HIGH);
-    writeDigit(min % 10); // unit of minute
+    // unit of minute
+    (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
     digitalWrite(UNIT_M, LOW);
 
 #else
@@ -85,7 +95,8 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_H, LOW);
             digitalWrite(UNIT_H, HIGH);
-            writeDigit(hour % 10); // unit of hour
+            // unit of hour or temp
+            (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
             states = UNITHOUR;
         }
         break;
@@ -94,7 +105,8 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(UNIT_H, LOW);
             digitalWrite(DOZ_M, HIGH);
-            writeDigit(min / 10); // dozen of minute
+            // dozen of minute
+            (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
             states = DOZENMIN;
         }
         break;
@@ -103,7 +115,8 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_M, LOW);
             digitalWrite(UNIT_M, HIGH);
-            writeDigit(min % 10); // unit of minute
+            // unit of minute
+            (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
             states = UNITMIN;
         }
         break;
@@ -118,7 +131,8 @@ void NixieClock::refresh(dataDisplay type)
         if (esp_timer_get_time() - previousNixieUpDuration >= REFRESH_NIXIE_TIMEOUT_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_H, HIGH);
-            writeDigit(hour / 10); // dozen of hour
+            // dozen of hour
+            (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
             states = DOZENHOUR;
         }
         break;
@@ -145,7 +159,7 @@ void NixieClock::resetAll()
 }
 
 
-void NixieClock::refreshTime()
+boolean NixieClock::refreshTime()
 {
 #ifndef STATE_MACHINE
     if (esp_timer_get_time() - previousGetTime >= REFRESH_NIXIE_TIMEOUT_US) {
@@ -195,33 +209,16 @@ void NixieClock::refreshTime()
             hour = 0;
 //            debug_print("1 DAY\n");
         }
-        refresh(TIME);
     }
-
-    
+    refresh(TIME);
 #endif
+    return (hour == 2) ? true : false;
 }
 
 void NixieClock::refreshTemp(int8_t entier, uint8_t decimal)
 {
+    entierTemp = entier;
+    decTemp = decimal;
 
-    digitalWrite(P_UNIT_H, HIGH);
-    if (entier < 0) digitalWrite (P_DOZ_H, HIGH);
-    else digitalWrite (P_DOZ_H, LOW);
-
-    digitalWrite(DOZ_H, HIGH);
-    writeDigit((uint8_t)entier / 10); // 
-    digitalWrite(DOZ_H, LOW);
-
-    digitalWrite(UNIT_H, HIGH);
-    writeDigit((uint8_t)entier % 10); //
-    digitalWrite(UNIT_H, LOW);
-
-    digitalWrite(DOZ_M, HIGH);
-    writeDigit(decimal / 10); // 
-    digitalWrite(DOZ_M, LOW);
-
-    digitalWrite(UNIT_M, HIGH);
-    writeDigit(decimal % 10); //
-    digitalWrite(UNIT_M, LOW);
+    refresh(TEMP);
 }
