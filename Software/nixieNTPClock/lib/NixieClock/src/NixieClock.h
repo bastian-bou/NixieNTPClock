@@ -26,6 +26,7 @@
 #define REFRESH_NIXIE_TIMEOUT_US    40000
 #define UP_NIXIE_DURATION_US        1000
 #define SECOND_US                   1000000
+#define NIXIE_ANIM_US               500000
 
 enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING};
 enum dataDisplay {TIME, TEMP};
@@ -41,9 +42,9 @@ class NixieClock {
         int64_t previousSec;
         int64_t previousNixieUpDuration;
         stateRefreshNixie states;
+        boolean isNixieOn;
 
         void writeDigit(uint8_t digit);
-        void resetAll();
         void refresh(dataDisplay type);
     public:
         NixieClock();
@@ -51,9 +52,15 @@ class NixieClock {
         void setHour(uint8_t _hour);
         void setMin(uint8_t _min);
         void setSec(uint8_t sec);
+
+        void setNixieOn();
+        void setNixieOff();
+
+        void resetAll();
         
         boolean refreshTime();
         void refreshTemp(int8_t entier, uint8_t decimal);
+        void doWaitingAnim();
 };
 
 

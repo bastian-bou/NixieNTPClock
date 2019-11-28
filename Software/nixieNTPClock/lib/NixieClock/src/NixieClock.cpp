@@ -20,6 +20,7 @@ NixieClock::NixieClock()
 
     previousNixieUpDuration = previousSec = previousGetTime = esp_timer_get_time();
     sec = min = hour = entierTemp = decTemp = 0;
+    isNixieOn = false;
 
     states = DOZENHOUR;
 }
@@ -49,10 +50,27 @@ void NixieClock::setSec(uint8_t _sec)
     previousSec = esp_timer_get_time();
 }
 
+void NixieClock::setNixieOn()
+{
+    isNixieOn = true;
+}
+
+void NixieClock::setNixieOff()
+{
+    isNixieOn = false;
+}
+
 void NixieClock::writeDigit(uint8_t digit)
 {
-    for (uint8_t i = 0; i < 4; i++) {
-        digitalWrite(i + A, ((digit >> i) & 1) ? HIGH : LOW);
+    uint8_t i;
+    if (isNixieOn) {
+        for (i = 0; i < 4; i++) {
+            digitalWrite(i + A, ((digit >> i) & 1) ? HIGH : LOW);
+        }
+    } else {
+        for (i = 0; i < 4; i++) {
+            digitalWrite(i + A, HIGH);
+        }
     }
 }
 
@@ -221,4 +239,33 @@ void NixieClock::refreshTemp(int8_t entier, uint8_t decimal)
     decTemp = decimal;
 
     refresh(TEMP);
+}
+
+void NixieClock::doWaitingAnim()
+{
+    static uint8_t position = 0;
+    static boolean direction = true;
+
+    if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
+        previousGetTime = esp_timer_get_time();
+        switch (position) {
+            case 0:
+                digitalWrite(P_DOZ_H, direction ? HIGH : LOW);
+            break;
+            case 1:
+                digitalWrite(P_UNIT_H, direction ? HIGH : LOW);
+            break;
+            case 2:
+                digitalWrite(P_DOZ_M, direction ? HIGH : LOW);
+            break;
+            case 3:
+                digitalWrite(P_UNIT_M, direction ? HIGH : LOW);
+                direction = !direction;
+            break;
+        }
+
+        position++;
+        if (position > 3) position = 0;
+    }
+    refresh(TIME);
 }

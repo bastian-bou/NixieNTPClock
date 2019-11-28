@@ -6,10 +6,10 @@
 #include <DallasTemperature.h>
 #include "debug.h"
 
+#include <WiFi.h>
+
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-
-#include <WiFiManager.h>
 
 
 //Temperature sensor 
@@ -27,13 +27,14 @@ DallasTemperature sensors(&oneWire);
 // Create nixie object
 NixieClock nixie;
 
-// WifiManager object
-WiFiManager wifiManager;
-
 // ntpServer object
 WiFiUDP ntpUDP;
 
 NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 0, 0);
+
+
+char wifi_ssid[] = "ssid";
+char wifi_pwd[]  = "password";
 
 
 void init_IO() {
@@ -65,7 +66,6 @@ void getNtpTime() {
 }
 
 void setup() {
-  boolean res;
 
 #ifdef DEBUG
   Serial.begin(115200);
@@ -73,16 +73,23 @@ void setup() {
 #endif
   init_IO();
 
-  res = wifiManager.autoConnect("horlogeNIXIE", "123456789");
+  WiFi.begin(wifi_ssid, wifi_pwd);             // Connect to the network
+  debug_print("Connecting to ");
+  debug_print(wifi_ssid);
 
-  if(!res) {
-        debug_print("Failed to connect\n");
-        ESP.restart();
-    } 
-    else {
-        //if you get here you have connected to the WiFi    
-        debug_print("connected...:)\n");
-    }
+  nixie.setNixieOn();
+ 
+  while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect
+    nixie.doWaitingAnim();
+  }
+ 
+  debug_print('\n');
+  debug_print("Connection established!");
+  debug_print("IP address:\t");
+  debug_print(WiFi.localIP());
+  debug_print('\n');
+
+  nixie.resetAll();
 
   timeClient.begin();
 }
