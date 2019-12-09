@@ -2,7 +2,6 @@
 #define H_NIXIE_CLOCK
 
 #include <Arduino.h>
-#include "debug.h"
 
 // Command anode of nixie valve
 #define DOZ_H       32
@@ -23,7 +22,7 @@
 #define STATE_MACHINE
 
 
-#define REFRESH_NIXIE_TIMEOUT_US    40000
+#define REFRESH_NIXIE_TIMEOUT_US    20000
 #define UP_NIXIE_DURATION_US        1000
 #define SECOND_US                   1000000
 #define NIXIE_ANIM_US               500000

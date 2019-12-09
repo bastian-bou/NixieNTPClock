@@ -1,5 +1,4 @@
 #include "NixieClock.h"
-#include "debug.h"
 
 NixieClock::NixieClock()
 {

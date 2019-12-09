@@ -1,10 +1,10 @@
 #include <Arduino.h>
+#include "debug.h"
 
 #include <NixieClock.h>
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "debug.h"
 
 #include <WiFi.h>
 
@@ -23,16 +23,14 @@ OneWire oneWire(TEMP);
 
 // Pass our oneWire reference to Dallas Temperature sensor 
 DallasTemperature sensors(&oneWire);
-
 // Create nixie object
 NixieClock nixie;
-
 // ntpServer object
 WiFiUDP ntpUDP;
-
+// NTPclient object connected on France server (more accurate)
 NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 0, 0);
 
-
+// SSID and password
 char wifi_ssid[] = "ssid";
 char wifi_pwd[]  = "password";
 
@@ -48,7 +46,7 @@ void init_IO() {
  **/
 float getTemp() {
   sensors.requestTemperatures();
-  //return temp in celcius
+  // Return temp in celcius
   return  sensors.getTempCByIndex(0);
 }
 
@@ -68,16 +66,16 @@ void getNtpTime() {
 void setup() {
 
 #ifdef DEBUG
-  Serial.begin(115200);
-  debug_print("-----Start program-------\n\n\n");
+  Serial.begin(9600);
+  debug_print("\n\n-----Start program-------\n\n\n");
 #endif
   init_IO();
 
-  WiFi.begin(wifi_ssid, wifi_pwd);             // Connect to the network
+  nixie.setNixieOn();
+
+  WiFi.begin(wifi_ssid, wifi_pwd); // Connection to the network
   debug_print("Connecting to ");
   debug_print(wifi_ssid);
-
-  nixie.setNixieOn();
  
   while (WiFi.status() != WL_CONNECTED) { // Wait for the Wi-Fi to connect
     nixie.doWaitingAnim();
@@ -92,15 +90,28 @@ void setup() {
   nixie.resetAll();
 
   timeClient.begin();
+  // Get the time from NTP server
+  timeClient.update();
+  debug_print("Current time: ");
+  debug_print(timeClient.getHours());debug_print(":");
+  debug_print(timeClient.getMinutes());debug_print(":");
+  debug_print(timeClient.getSeconds());debug_print("\n");
+  // Set the time in Nixie object
+  nixie.setTime(
+    (uint8_t)timeClient.getHours(), 
+    (uint8_t)timeClient.getMinutes(),
+    (uint8_t)timeClient.getSeconds());
 }
 
 void loop() {
-  if (nixie.refreshTime()) {
-    getNtpTime();
-  }
+  
   if (isTouch()) {
     debug_print("Touch temp\n");
     float temp = getTemp();
     nixie.refreshTemp((int8_t)temp, (uint8_t)(temp - (int8_t)temp));
+  }
+
+  if (nixie.refreshTime()) {
+    getNtpTime();
   }
 }
