@@ -19,7 +19,7 @@ NixieClock::NixieClock()
 
     previousNixieUpDuration = previousSec = previousGetTime = esp_timer_get_time();
     sec = min = hour = entierTemp = decTemp = 0;
-    isNixieOn = false;
+    isNixieOn = isTimeToRefreshTime = false;
 
     states = DOZENHOUR;
 }
@@ -49,6 +49,14 @@ void NixieClock::setSec(uint8_t _sec)
     previousSec = esp_timer_get_time();
 }
 
+void NixieClock::setTemp(int8_t entier, uint8_t decimal)
+{
+    entierTemp = entier;
+    decTemp = decimal;
+    //after temperature, refresh clock with NTP server
+    isTimeToRefreshTime = true;
+}
+
 void NixieClock::setNixieOn()
 {
     isNixieOn = true;
@@ -75,35 +83,17 @@ void NixieClock::writeDigit(uint8_t digit)
 
 void NixieClock::refresh(dataDisplay type)
 {
+    uint8_t data[4] = {10, 10, 10, 10};
+    refresh(type, data);
+}
+
+void NixieClock::refresh(dataDisplay type, uint8_t data[4])
+{
     if (type == TEMP) {
         digitalWrite(P_UNIT_H, HIGH);
         if (entierTemp < 0) digitalWrite (P_DOZ_H, HIGH);
         else digitalWrite (P_DOZ_H, LOW);
     }
-#ifndef STATE_MACHINE
-
-    digitalWrite(DOZ_H, HIGH);
-    // dozen of hour
-    (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
-    digitalWrite(DOZ_H, LOW);
-
-    digitalWrite(UNIT_H, HIGH);
-    // unit of hour
-    (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
-    digitalWrite(UNIT_H, LOW);
-
-    digitalWrite(DOZ_M, HIGH);
-    // dozen of minute
-    (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
-    digitalWrite(DOZ_M, LOW);
-
-    digitalWrite(UNIT_M, HIGH);
-    // unit of minute
-    (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
-    digitalWrite(UNIT_M, LOW);
-
-#else
-
     // State machine
     switch (states)
     {
@@ -112,8 +102,11 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_H, LOW);
             digitalWrite(UNIT_H, HIGH);
-            // unit of hour or temp
-            (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
+            if (type == MANUAL)
+                writeDigit(data[1]);
+            else
+                // unit of hour or temp
+                (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
             states = UNITHOUR;
         }
         break;
@@ -122,8 +115,11 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(UNIT_H, LOW);
             digitalWrite(DOZ_M, HIGH);
-            // dozen of minute
-            (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
+            if (type == MANUAL)
+                writeDigit(data[2]);
+            else
+                // dozen of minute
+                (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
             states = DOZENMIN;
         }
         break;
@@ -132,8 +128,11 @@ void NixieClock::refresh(dataDisplay type)
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_M, LOW);
             digitalWrite(UNIT_M, HIGH);
-            // unit of minute
-            (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
+            if (type == MANUAL)
+                writeDigit(data[3]);
+            else
+                // unit of minute
+                (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
             states = UNITMIN;
         }
         break;
@@ -148,15 +147,17 @@ void NixieClock::refresh(dataDisplay type)
         if (esp_timer_get_time() - previousNixieUpDuration >= REFRESH_NIXIE_TIMEOUT_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_H, HIGH);
-            // dozen of hour
-            (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
+            if (type == MANUAL)
+                writeDigit(data[0]);
+            else
+                // dozen of hour
+                (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
             states = DOZENHOUR;
         }
         break;
     default:
         break;
     }
-#endif
 }
 
 void NixieClock::resetAll() 
@@ -176,35 +177,19 @@ void NixieClock::resetAll()
 }
 
 
-boolean NixieClock::refreshTime()
+boolean NixieClock::showTime()
 {
-#ifndef STATE_MACHINE
-    if (esp_timer_get_time() - previousGetTime >= REFRESH_NIXIE_TIMEOUT_US) {
-        previousGetTime = esp_timer_get_time();
-        // we work in µs
-        if (previousGetTime - previousSec >= SECOND_US) {
-            // 1 second
-            previousSec = previousGetTime;
-            sec++;
-            digitalWrite(P_UNIT_H, digitalRead(P_UNIT_H) ? LOW : HIGH);
-            if (sec >= 59) {
-                sec = 0;
-                min++;
-                debug_print("1 MINUTE\n");
-            }
-            if (min >= 59) {
-                min = 0;
-                hour++;
-                debug_print("1 HOUR\n");
-            }
-            if (hour >= 24) {
-                hour = 0;
-                debug_print("1 DAY\n");
-            }
-        }
-        refresh(TIME);
+    static boolean isRefreshed = false;
+    //Update of not the clock with NTP
+    if (((hour == 2) || (hour == 12)) && (isRefreshed == false)) {
+        isRefreshed = true;
+        return true;
+    } else if (isTimeToRefreshTime) {
+        isTimeToRefreshTime = false;
+        return true;
+    } else if (((hour == 3) || (hour == 13)) && (isRefreshed == true)){
+        isRefreshed = false;
     }
-#else
 
     if (esp_timer_get_time() - previousSec >= SECOND_US) {
         // 1 second
@@ -215,28 +200,22 @@ boolean NixieClock::refreshTime()
         if (sec >= 59) {
             sec = 0;
             min++;
-//            debug_print("1 MINUTE\n");
         }
         if (min >= 59) {
             min = 0;
             hour++;
-//            debug_print("1 HOUR\n");
         }
         if (hour >= 24) {
             hour = 0;
-//            debug_print("1 DAY\n");
         }
     }
     refresh(TIME);
-#endif
-    return (hour == 2) ? true : false;
+
+    return false;
 }
 
-void NixieClock::refreshTemp(int8_t entier, uint8_t decimal)
+void NixieClock::showTemp()
 {
-    entierTemp = entier;
-    decTemp = decimal;
-
     refresh(TEMP);
 }
 
@@ -266,5 +245,5 @@ void NixieClock::doWaitingAnim()
         position++;
         if (position > 3) position = 0;
     }
-    refresh(TIME);
+    refresh(MANUAL);
 }

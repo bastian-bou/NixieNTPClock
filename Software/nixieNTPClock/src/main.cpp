@@ -34,6 +34,10 @@ NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 0, 0);
 char wifi_ssid[] = "ssid";
 char wifi_pwd[]  = "password";
 
+boolean isTimeGetTemp;
+
+float temperature;
+
 
 void init_IO() {
 
@@ -44,10 +48,17 @@ void init_IO() {
  * Return the temperature in celcius
  * return DEVICE_DISCONNECTED_C = -127 if there is an error
  **/
-float getTemp() {
-  sensors.requestTemperatures();
-  // Return temp in celcius
-  return  sensors.getTempCByIndex(0);
+void showTemp() {
+  if (isTimeGetTemp) {
+    sensors.requestTemperatures();
+    isTimeGetTemp = false;
+    //temp in celcius
+    temperature = sensors.getTempCByIndex(0);
+    //set the temperature in nixie object
+    nixie.setTemp((int8_t)temperature, (uint8_t)(temperature - (int8_t)temperature));
+  }
+  //refresh nixie tubes
+  nixie.showTemp();
 }
 
 boolean isTouch() {
@@ -70,6 +81,8 @@ void setup() {
   debug_print("\n\n-----Start program-------\n\n\n");
 #endif
   init_IO();
+
+  isTimeGetTemp = true;
 
   nixie.setNixieOn();
 
@@ -107,11 +120,11 @@ void loop() {
   
   if (isTouch()) {
     debug_print("Touch temp\n");
-    float temp = getTemp();
-    nixie.refreshTemp((int8_t)temp, (uint8_t)(temp - (int8_t)temp));
-  }
-
-  if (nixie.refreshTime()) {
-    getNtpTime();
+    showTemp();
+  } else {
+    isTimeGetTemp = true;
+    if (nixie.showTime()) {
+      getNtpTime();
+    }
   }
 }
