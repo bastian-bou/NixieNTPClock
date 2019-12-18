@@ -84,8 +84,6 @@ void setup() {
 
   isTimeGetTemp = true;
 
-  nixie.setNixieOn();
-
   WiFi.begin(wifi_ssid, wifi_pwd); // Connection to the network
   debug_print("Connecting to ");
   debug_print(wifi_ssid);
@@ -101,6 +99,8 @@ void setup() {
   debug_print('\n');
 
   nixie.resetAll();
+  // Activate nixie tubes (digit)
+  nixie.setNixieOn();
 
   timeClient.begin();
   // Get the time from NTP server

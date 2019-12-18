@@ -1,5 +1,8 @@
 #include "NixieClock.h"
 
+/**
+ * Brief: Creation of the object, configure pinout, variables initialization 
+ */ 
 NixieClock::NixieClock()
 {
     pinMode(DOZ_H, OUTPUT);
@@ -19,12 +22,16 @@ NixieClock::NixieClock()
 
     previousNixieUpDuration = previousSec = previousGetTime = esp_timer_get_time();
     sec = min = hour = entierTemp = decTemp = 0;
-    isNixieOn = isTimeToRefreshTime = false;
+    isTimeToRefreshTime = false;
+    // Disable digit on nixie tubes
+    isNixieOn = false;
 
     states = DOZENHOUR;
 }
 
-
+/**
+ * Setter of all variables corresponding to the clock
+ */
 void NixieClock::setTime(uint8_t _hour, uint8_t _min, uint8_t _sec)
 {
     hour = _hour;
@@ -33,22 +40,34 @@ void NixieClock::setTime(uint8_t _hour, uint8_t _min, uint8_t _sec)
     previousSec = esp_timer_get_time();
 }
 
+/**
+ * Setter on hour
+ */
 void NixieClock::setHour(uint8_t _hour)
 {
     hour = _hour;
 }
 
+/**
+ * Setter on minute
+ */
 void NixieClock::setMin(uint8_t _min)
 {
     min = _min;
 }
 
+/**
+ * Setter on second
+ */
 void NixieClock::setSec(uint8_t _sec)
 {
     sec = _sec;
     previousSec = esp_timer_get_time();
 }
 
+/**
+ * Setter on all variables for temperature
+ */
 void NixieClock::setTemp(int8_t entier, uint8_t decimal)
 {
     entierTemp = entier;
@@ -57,16 +76,25 @@ void NixieClock::setTemp(int8_t entier, uint8_t decimal)
     isTimeToRefreshTime = true;
 }
 
+/**
+ * Enable digit on nixie tubes
+ */
 void NixieClock::setNixieOn()
 {
     isNixieOn = true;
 }
 
+/**
+ * Disable digit on nixie tubes, you can still command dot
+ */
 void NixieClock::setNixieOff()
 {
     isNixieOn = false;
 }
 
+/**
+ * Write digit on nixie driver (BCD -> 10seg)
+ */
 void NixieClock::writeDigit(uint8_t digit)
 {
     uint8_t i;
@@ -81,12 +109,18 @@ void NixieClock::writeDigit(uint8_t digit)
     }
 }
 
+/**
+ * Refresh nixie tubes without specific data (only clock or temperature)
+ */
 void NixieClock::refresh(dataDisplay type)
 {
     uint8_t data[4] = {10, 10, 10, 10};
     refresh(type, data);
 }
 
+/**
+ * Refresh nixie tubes with specific data
+ */
 void NixieClock::refresh(dataDisplay type, uint8_t data[4])
 {
     if (type == TEMP) {
@@ -160,6 +194,9 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
     }
 }
 
+/**
+ * Put low level on all pins for nixie function
+ */
 void NixieClock::resetAll() 
 {
     digitalWrite(DOZ_H, LOW);
@@ -176,7 +213,9 @@ void NixieClock::resetAll()
     digitalWrite(D, LOW);
 }
 
-
+/**
+ * Update time and refresh nixie tubes
+ */
 boolean NixieClock::showTime()
 {
     static boolean isRefreshed = false;
@@ -214,11 +253,17 @@ boolean NixieClock::showTime()
     return false;
 }
 
+/**
+ * refresh nixie tubes with temperature
+ */
 void NixieClock::showTemp()
 {
     refresh(TEMP);
 }
 
+/**
+ * Animation with dot on nixie tubes, chenillard like (ubuntu loading effect)
+ */
 void NixieClock::doWaitingAnim()
 {
     static uint8_t position = 0;
