@@ -22,10 +22,10 @@
 #define STATE_MACHINE
 
 
-#define REFRESH_NIXIE_TIMEOUT_US    20000
-#define UP_NIXIE_DURATION_US        1000
-#define SECOND_US                   1000000
-#define NIXIE_ANIM_US               500000
+#define TIMEOUT_BETWEEN_TWO_DIGITS_US   4
+#define UP_NIXIE_DURATION_US            4000
+#define SECOND_US                       1000000
+#define NIXIE_ANIM_US                   500000
 
 enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING};
 enum dataDisplay {TIME, TEMP, MANUAL};

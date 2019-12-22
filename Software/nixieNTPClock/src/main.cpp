@@ -27,12 +27,15 @@ DallasTemperature sensors(&oneWire);
 NixieClock nixie;
 // ntpServer object
 WiFiUDP ntpUDP;
-// NTPclient object connected on France server (more accurate)
-NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 0, 0);
+// NTPclient object connected on France server (more accurate) 3600 for UTC +1
+NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 3600, 0);
 
 // SSID and password
-char wifi_ssid[] = "ssid";
-char wifi_pwd[]  = "password";
+// char wifi_ssid[] = "ssid";
+// char wifi_pwd[]  = "password";
+
+char wifi_ssid[] = "la_wifi_de_bastian";
+char wifi_pwd[]  = "wifiDeBastian";
 
 boolean isTimeGetTemp;
 

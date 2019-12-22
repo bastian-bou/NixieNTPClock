@@ -134,61 +134,65 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
     case DOZENHOUR:
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
-            digitalWrite(DOZ_H, LOW);
-            digitalWrite(UNIT_H, HIGH);
+            digitalWrite(UNIT_M, LOW);
+//            NOP();
             if (type == MANUAL)
-                writeDigit(data[1]);
+                writeDigit(data[0]);
             else
-                // unit of hour or temp
-                (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
+                // dozen of hour
+                (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
+            digitalWrite(DOZ_H, HIGH);
             states = UNITHOUR;
         }
         break;
     case UNITHOUR:
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
-            digitalWrite(UNIT_H, LOW);
-            digitalWrite(DOZ_M, HIGH);
+            digitalWrite(DOZ_H, LOW);
+//            NOP();
             if (type == MANUAL)
-                writeDigit(data[2]);
+                writeDigit(data[1]);
             else
-                // dozen of minute
-                (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
+                // unit of hour or temp
+                (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
+            digitalWrite(UNIT_H, HIGH);
             states = DOZENMIN;
         }
         break;
     case DOZENMIN:
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
-            digitalWrite(DOZ_M, LOW);
-            digitalWrite(UNIT_M, HIGH);
+            digitalWrite(UNIT_H, LOW);
+//            NOP();
             if (type == MANUAL)
-                writeDigit(data[3]);
+                writeDigit(data[2]);
             else
-                // unit of minute
-                (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
+                // dozen of minute
+                (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
+            digitalWrite(DOZ_M, HIGH);
             states = UNITMIN;
         }
         break;
     case UNITMIN:
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
-            digitalWrite(UNIT_M, LOW);
-            states = WAITING;
-        }
-        break;
-    case WAITING:
-        if (esp_timer_get_time() - previousNixieUpDuration >= REFRESH_NIXIE_TIMEOUT_US) {
-            previousNixieUpDuration = esp_timer_get_time();
-            digitalWrite(DOZ_H, HIGH);
+            digitalWrite(DOZ_M, LOW);
+//            NOP();
             if (type == MANUAL)
-                writeDigit(data[0]);
+                writeDigit(data[3]);
             else
-                // dozen of hour
-                (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
+                // unit of minute
+                (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
+            digitalWrite(UNIT_M, HIGH);
             states = DOZENHOUR;
         }
         break;
+    case WAITING:
+        if (esp_timer_get_time() - previousNixieUpDuration >= TIMEOUT_BETWEEN_TWO_DIGITS_US) {
+            previousNixieUpDuration = esp_timer_get_time();
+
+        }
+    break;
     default:
         break;
     }

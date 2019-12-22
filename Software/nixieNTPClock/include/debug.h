@@ -2,7 +2,7 @@
 #define H_DEBUG
 
 // Comment this line if you don't want debug fonctionalities
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define debug_print(arg) Serial.print(arg)
