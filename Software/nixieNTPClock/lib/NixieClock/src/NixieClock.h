@@ -29,6 +29,7 @@
 
 enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING};
 enum dataDisplay {TIME, TEMP, MANUAL};
+enum testType {DOT, DIGITS_MULTIPLEX, DIGITS_NORMAL};
 
 class NixieClock {
     private:
@@ -57,6 +58,8 @@ class NixieClock {
 
         void setNixieOn();
         void setNixieOff();
+
+        void testNixie(testType test);
 
         void resetAll();
         

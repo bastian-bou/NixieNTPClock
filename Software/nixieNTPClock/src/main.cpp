@@ -31,11 +31,8 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 3600, 0);
 
 // SSID and password
-// char wifi_ssid[] = "ssid";
-// char wifi_pwd[]  = "password";
-
-char wifi_ssid[] = "la_wifi_de_bastian";
-char wifi_pwd[]  = "wifiDeBastian";
+char wifi_ssid[] = "ssid";
+char wifi_pwd[]  = "password";
 
 boolean isTimeGetTemp;
 
@@ -86,6 +83,31 @@ void setup() {
   init_IO();
 
   isTimeGetTemp = true;
+  /* If we touch the capacitive button (temp) at the begining, we start
+  ** the nixie test loop
+  ** We need to restart the device to stop this loop
+  */
+  if (isTouch())
+  {
+    int64_t previousUs = esp_timer_get_time();
+    testType test = DOT;
+    nixie.resetAll();
+    // Activate nixie tubes (digit)
+    nixie.setNixieOn();
+
+    debug_print("Start test on Nixie Clock\n");
+
+    while (1) {
+      nixie.testNixie(test);
+      // Every 20 seconds, we change the test
+      if (esp_timer_get_time() - previousUs >= 20000000) {
+        previousUs = esp_timer_get_time();
+        if (test == DOT) test = DIGITS_MULTIPLEX;
+        else if (test == DIGITS_MULTIPLEX) test = DIGITS_NORMAL;
+        else if (test == DIGITS_NORMAL) test = DOT;
+      }
+    }
+  }
 
   WiFi.begin(wifi_ssid, wifi_pwd); // Connection to the network
   debug_print("Connecting to ");

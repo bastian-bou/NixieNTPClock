@@ -114,7 +114,7 @@ void NixieClock::writeDigit(uint8_t digit)
  */
 void NixieClock::refresh(dataDisplay type)
 {
-    uint8_t data[4] = {10, 10, 10, 10};
+    uint8_t data[4] = {14, 14, 14, 14};
     refresh(type, data);
 }
 
@@ -192,7 +192,7 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
             previousNixieUpDuration = esp_timer_get_time();
 
         }
-    break;
+        break;
     default:
         break;
     }
@@ -295,4 +295,70 @@ void NixieClock::doWaitingAnim()
         if (position > 3) position = 0;
     }
     refresh(MANUAL);
+}
+
+void NixieClock::testNixie(testType test)
+{
+    static uint8_t digitValue = 0;
+    static uint8_t data[4] = {0, 0, 0, 0};
+    static uint8_t position = 0;
+    switch (test)
+    {
+    case DOT:
+        doWaitingAnim();
+        break;
+
+    case DIGITS_MULTIPLEX:
+        if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
+            previousGetTime = esp_timer_get_time();
+            digitValue++;
+            if (digitValue > 9) 
+                digitValue = 0;
+            data[0] = data[1] = data[2] = data[3] = digitValue;
+        }
+        refresh(MANUAL, data);
+        break;
+
+    case DIGITS_NORMAL:
+        if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
+            previousGetTime = esp_timer_get_time();
+            switch (position)
+            {
+            case 0:
+                digitalWrite(UNIT_M, LOW);
+                writeDigit(digitValue);
+                digitalWrite(DOZ_H, HIGH);
+                break;
+            case 1:
+                digitalWrite(DOZ_H, LOW);
+                writeDigit(digitValue);
+                digitalWrite(UNIT_H, HIGH);
+                break;
+            case 2:
+                digitalWrite(UNIT_H, LOW);
+                writeDigit(digitValue);
+                digitalWrite(DOZ_M, HIGH);
+                break;
+            case 3:
+                digitalWrite(DOZ_M, LOW);
+                writeDigit(digitValue);
+                digitalWrite(UNIT_M, HIGH);
+                break;
+            default:
+                break;
+            }
+            digitValue++;
+            if (digitValue > 9)
+            {
+                digitValue = 0;
+                position++;
+                if (position > 3)
+                    position = 0;
+            }
+        }
+        break;
+    
+    default:
+        break;
+    }
 }
