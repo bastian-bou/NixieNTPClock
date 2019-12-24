@@ -27,7 +27,7 @@
 #define SECOND_US                       1000000
 #define NIXIE_ANIM_US                   500000
 
-enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING};
+enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING, DOTHOUR};
 enum dataDisplay {TIME, TEMP, MANUAL};
 enum testType {DOT, DIGITS_MULTIPLEX, DIGITS_NORMAL};
 

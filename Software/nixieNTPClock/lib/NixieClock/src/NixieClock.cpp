@@ -135,7 +135,7 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(UNIT_M, LOW);
-//            NOP();
+            NOP();
             if (type == MANUAL)
                 writeDigit(data[0]);
             else
@@ -149,7 +149,7 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_H, LOW);
-//            NOP();
+            NOP();
             if (type == MANUAL)
                 writeDigit(data[1]);
             else
@@ -163,7 +163,7 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(UNIT_H, LOW);
-//            NOP();
+            NOP();
             if (type == MANUAL)
                 writeDigit(data[2]);
             else
@@ -177,7 +177,7 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
             previousNixieUpDuration = esp_timer_get_time();
             digitalWrite(DOZ_M, LOW);
-//            NOP();
+            NOP();
             if (type == MANUAL)
                 writeDigit(data[3]);
             else

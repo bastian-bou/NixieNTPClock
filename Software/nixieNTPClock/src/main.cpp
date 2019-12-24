@@ -55,7 +55,7 @@ void showTemp() {
     //temp in celcius
     temperature = sensors.getTempCByIndex(0);
     //set the temperature in nixie object
-    nixie.setTemp((int8_t)temperature, (uint8_t)(temperature - (int8_t)temperature));
+    nixie.setTemp((int8_t)temperature, (uint8_t)((temperature - (int8_t)temperature) * 100));
   }
   //refresh nixie tubes
   nixie.showTemp();
