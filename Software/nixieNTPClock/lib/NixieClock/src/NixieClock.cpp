@@ -222,17 +222,7 @@ void NixieClock::resetAll()
  */
 boolean NixieClock::showTime()
 {
-    static boolean isRefreshed = false;
-    //Update of not the clock with NTP
-    if (((hour == 2) || (hour == 12)) && (isRefreshed == false)) {
-        isRefreshed = true;
-        return true;
-    } else if (isTimeToRefreshTime) {
-        isTimeToRefreshTime = false;
-        return true;
-    } else if (((hour == 3) || (hour == 13)) && (isRefreshed == true)){
-        isRefreshed = false;
-    }
+    boolean isRefreshed = false;
 
     if (esp_timer_get_time() - previousSec >= SECOND_US) {
         // 1 second
@@ -240,21 +230,19 @@ boolean NixieClock::showTime()
         sec++;
         // toggle unit hour comma (point)
         digitalWrite(P_UNIT_H, digitalRead(P_UNIT_H) ? LOW : HIGH);
-        if (sec >= 59) {
+        if (sec > 59) {
             sec = 0;
             min++;
         }
-        if (min >= 59) {
+        if (min > 59) {
             min = 0;
-            hour++;
-        }
-        if (hour >= 24) {
-            hour = 0;
+            //Update the clock with NTP
+            isRefreshed = true;
         }
     }
     refresh(TIME);
 
-    return false;
+    return isRefreshed;
 }
 
 /**
