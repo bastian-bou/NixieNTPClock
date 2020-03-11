@@ -20,7 +20,7 @@ NixieClock::NixieClock()
 
     resetAll();
 
-    previousNixieUpDuration = previousSec = previousGetTime = esp_timer_get_time();
+    previousNixieUpDuration = previousSec = previousGetTime = getTimeUs();
     sec = min = hour = entierTemp = decTemp = 0;
     isTimeToRefreshTime = false;
     // Disable digit on nixie tubes
@@ -37,7 +37,7 @@ void NixieClock::setTime(uint8_t _hour, uint8_t _min, uint8_t _sec)
     hour = _hour;
     min = _min;
     sec = _sec;
-    previousSec = esp_timer_get_time();
+    previousSec = getTimeUs();
 }
 
 /**
@@ -62,7 +62,7 @@ void NixieClock::setMin(uint8_t _min)
 void NixieClock::setSec(uint8_t _sec)
 {
     sec = _sec;
-    previousSec = esp_timer_get_time();
+    previousSec = getTimeUs();
 }
 
 /**
@@ -132,8 +132,8 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
     switch (states)
     {
     case DOZENHOUR:
-        if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = esp_timer_get_time();
+        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
+            previousNixieUpDuration = getTimeUs();
             digitalWrite(UNIT_M, LOW);
             NOP();
             if (type == MANUAL)
@@ -146,8 +146,8 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         }
         break;
     case UNITHOUR:
-        if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = esp_timer_get_time();
+        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
+            previousNixieUpDuration = getTimeUs();
             digitalWrite(DOZ_H, LOW);
             NOP();
             if (type == MANUAL)
@@ -160,8 +160,8 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         }
         break;
     case DOZENMIN:
-        if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = esp_timer_get_time();
+        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
+            previousNixieUpDuration = getTimeUs();
             digitalWrite(UNIT_H, LOW);
             NOP();
             if (type == MANUAL)
@@ -174,8 +174,8 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         }
         break;
     case UNITMIN:
-        if (esp_timer_get_time() - previousNixieUpDuration >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = esp_timer_get_time();
+        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
+            previousNixieUpDuration = getTimeUs();
             digitalWrite(DOZ_M, LOW);
             NOP();
             if (type == MANUAL)
@@ -188,8 +188,8 @@ void NixieClock::refresh(dataDisplay type, uint8_t data[4])
         }
         break;
     case WAITING:
-        if (esp_timer_get_time() - previousNixieUpDuration >= TIMEOUT_BETWEEN_TWO_DIGITS_US) {
-            previousNixieUpDuration = esp_timer_get_time();
+        if ((getTimeUs() - previousNixieUpDuration) >= TIMEOUT_BETWEEN_TWO_DIGITS_US) {
+            previousNixieUpDuration = getTimeUs();
 
         }
         break;
@@ -224,9 +224,9 @@ boolean NixieClock::showTime()
 {
     boolean isRefreshed = false;
 
-    if (esp_timer_get_time() - previousSec >= SECOND_US) {
+    if ((getTimeUs() - previousSec) >= SECOND_US) {
         // 1 second
-        previousSec = esp_timer_get_time();
+        previousSec = getTimeUs();
         sec++;
         // toggle unit hour comma (point)
         digitalWrite(P_UNIT_H, digitalRead(P_UNIT_H) ? LOW : HIGH);
@@ -261,8 +261,8 @@ void NixieClock::doWaitingAnim()
     static uint8_t position = 0;
     static boolean direction = true;
 
-    if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
-        previousGetTime = esp_timer_get_time();
+    if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
+        previousGetTime = getTimeUs();
         switch (position) {
             case 0:
                 digitalWrite(P_DOZ_H, direction ? HIGH : LOW);
@@ -297,8 +297,8 @@ void NixieClock::testNixie(testType test)
         break;
 
     case DIGITS_MULTIPLEX:
-        if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
-            previousGetTime = esp_timer_get_time();
+        if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
+            previousGetTime = getTimeUs();
             digitValue++;
             if (digitValue > 9) 
                 digitValue = 0;
@@ -308,8 +308,8 @@ void NixieClock::testNixie(testType test)
         break;
 
     case DIGITS_NORMAL:
-        if (esp_timer_get_time() - previousGetTime >= NIXIE_ANIM_US) {
-            previousGetTime = esp_timer_get_time();
+        if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
+            previousGetTime = getTimeUs();
             switch (position)
             {
             case 0:

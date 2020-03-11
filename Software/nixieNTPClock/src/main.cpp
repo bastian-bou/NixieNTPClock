@@ -90,7 +90,7 @@ void setup() {
   // delay(500);
   // if (isTouch())
   // {
-  //   int64_t previousUs = esp_timer_get_time();
+  //   int64_t previousUs = getTimeUs();
   //   testType test = DOT;
   //   nixie.resetAll();
   //   // Activate nixie tubes (digit)
@@ -101,8 +101,8 @@ void setup() {
   //   while (1) {
   //     nixie.testNixie(test);
   //     // Every 20 seconds, we change the test
-  //     if (esp_timer_get_time() - previousUs >= 20000000) {
-  //       previousUs = esp_timer_get_time();
+  //     if ((getTimeUs() - previousUs) >= 20000000) {
+  //       previousUs = getTimeUs();
   //       if (test == DOT) test = DIGITS_MULTIPLEX;
   //       else if (test == DIGITS_MULTIPLEX) test = DIGITS_NORMAL;
   //       else if (test == DIGITS_NORMAL) test = DOT;

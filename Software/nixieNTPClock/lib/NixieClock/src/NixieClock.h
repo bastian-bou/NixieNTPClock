@@ -27,6 +27,8 @@
 #define SECOND_US                       1000000
 #define NIXIE_ANIM_US                   500000
 
+#define getTimeUs()   ((uint64_t)esp_timer_get_time())
+
 enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING, DOTHOUR};
 enum dataDisplay {TIME, TEMP, MANUAL};
 enum testType {DOT, DIGITS_MULTIPLEX, DIGITS_NORMAL};
@@ -38,9 +40,9 @@ class NixieClock {
         uint8_t sec;
         int8_t  entierTemp;
         uint8_t decTemp;
-        int64_t previousGetTime;
-        int64_t previousSec;
-        int64_t previousNixieUpDuration;
+        uint64_t previousGetTime;
+        uint64_t previousSec;
+        uint64_t previousNixieUpDuration;
         stateRefreshNixie states;
         boolean isNixieOn;
         boolean isTimeToRefreshTime;
@@ -50,6 +52,7 @@ class NixieClock {
         void refresh(dataDisplay type);
     public:
         NixieClock();
+
         void setTime(uint8_t _hour, uint8_t _min, uint8_t _sec);
         void setHour(uint8_t _hour);
         void setMin(uint8_t _min);
