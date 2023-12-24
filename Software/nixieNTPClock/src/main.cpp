@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "debug.h"
+#include "params.h"
 
 #include <NixieClock.h>
 
@@ -7,15 +8,13 @@
 #include <DallasTemperature.h>
 
 #include <WiFi.h>
-
-#include <NTPClient.h>
-#include <WiFiUdp.h>
+#include "time.h"
 
 
 //Temperature sensor 
-#define TEMP        15
+#define TEMP  15
 //Tactile sensor
-#define TOUCH       4
+#define TOUCH 4
 
 
 // Setup a oneWire instance to communicate with any OneWire devices
@@ -25,14 +24,12 @@ OneWire oneWire(TEMP);
 DallasTemperature sensors(&oneWire);
 // Create nixie object
 NixieClock nixie;
-// ntpServer object
-WiFiUDP ntpUDP;
-// NTPclient object connected on France server (more accurate) 3600 for UTC +1
-NTPClient timeClient(ntpUDP, "fr.pool.ntp.org", 3600, 0);
 
-// SSID and password
-char wifi_ssid[] = "ssid";
-char wifi_pwd[]  = "password";
+// sntp parameters
+const char * ntp_server = "fr.pool.ntp.org";
+const long   gmt_offset_sec = 3600;
+const int    daylight_offset_sec = 3600;
+const char * timezone = "CET-1CEST,M3.5.0,M10.5.0/3"; // Timezone of Paris -> https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 
 boolean isTimeGetTemp;
 
@@ -67,11 +64,13 @@ boolean isTouch() {
 }
 
 void getNtpTime() {
-  timeClient.update();
+  struct tm timeInfo;
+
+  getLocalTime(&timeInfo);
   nixie.setTime(
-    (uint8_t)timeClient.getHours(), 
-    (uint8_t)timeClient.getMinutes(),
-    (uint8_t)timeClient.getSeconds());
+    (uint8_t)timeInfo.tm_hour, 
+    (uint8_t)timeInfo.tm_min,
+    (uint8_t)timeInfo.tm_sec);
 }
 
 void setup() {
@@ -128,18 +127,23 @@ void setup() {
   // Activate nixie tubes (digit)
   nixie.setNixieOn();
 
-  timeClient.begin();
-  // Get the time from NTP server
-  timeClient.update();
+  // Configure the sntp server
+  configTime(gmt_offset_sec, daylight_offset_sec, ntp_server);
+  // Add the timezone to it
+  setenv("TZ", timezone, 1);
+  tzset();
+
+  struct tm timeInfo;
+  getLocalTime(&timeInfo);
   debug_print("Current time: ");
-  debug_print(timeClient.getHours());debug_print(":");
-  debug_print(timeClient.getMinutes());debug_print(":");
-  debug_print(timeClient.getSeconds());debug_print("\n");
+  debug_print(timeInfo.tm_hour);debug_print(":");
+  debug_print(timeInfo.tm_min);debug_print(":");
+  debug_print(timeInfo.tm_sec);debug_print("\n");
   // Set the time in Nixie object
   nixie.setTime(
-    (uint8_t)timeClient.getHours(), 
-    (uint8_t)timeClient.getMinutes(),
-    (uint8_t)timeClient.getSeconds());
+    (uint8_t)timeInfo.tm_hour, 
+    (uint8_t)timeInfo.tm_min,
+    (uint8_t)timeInfo.tm_sec);
 }
 
 void loop() {

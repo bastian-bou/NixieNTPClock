@@ -1,5 +1,5 @@
-#ifndef H_DEBUG
-#define H_DEBUG
+#ifndef DEBUG_H
+#define DEBUG_H
 
 // Comment this line if you don't want debug fonctionalities
 //#define DEBUG
