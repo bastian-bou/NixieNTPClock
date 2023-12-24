@@ -1,5 +1,5 @@
-#ifndef H_NIXIE_CLOCK
-#define H_NIXIE_CLOCK
+#ifndef NIXIE_CLOCK_H
+#define NIXIE_CLOCK_H
 
 #include <Arduino.h>
 
@@ -27,25 +27,39 @@
 #define SECOND_US                       1000000
 #define NIXIE_ANIM_US                   500000
 
-#define getTimeUs()   ((uint64_t)esp_timer_get_time())
+#define GET_TIME_US()                   ((uint64_t)esp_timer_get_time())
 
-enum stateRefreshNixie {DOZENHOUR, UNITHOUR, DOZENMIN, UNITMIN, WAITING, DOTHOUR};
-enum dataDisplay {TIME, TEMP, MANUAL};
-enum testType {DOT, DIGITS_MULTIPLEX, DIGITS_NORMAL};
+enum stateRefreshNixie {
+    DOZENHOUR,
+    UNITHOUR,
+    DOZENMIN,
+    UNITMIN,
+    WAITING,
+    DOTHOUR
+};
+enum dataDisplay {
+    TIME,
+    TEMP,
+    MANUAL
+};
+enum testType {
+    DOT,
+    DIGITS_MULTIPLEX,
+    DIGITS_NORMAL
+};
 
 class NixieClock {
     private:
         uint8_t hour;
         uint8_t min;
         uint8_t sec;
-        int8_t  entierTemp;
-        uint8_t decTemp;
-        uint64_t previousGetTime;
-        uint64_t previousSec;
-        uint64_t previousNixieUpDuration;
+        int8_t  integer_temp;
+        uint8_t dec_temp;
+        uint64_t previous_get_time;
+        uint64_t previous_sec;
+        uint64_t previous_nixie_up_duration;
         stateRefreshNixie states;
-        boolean isNixieOn;
-        boolean isTimeToRefreshTime;
+        boolean is_nixie_on;
 
         void writeDigit(uint8_t digit);
         void refresh(dataDisplay type, uint8_t data[4]);
@@ -53,12 +67,11 @@ class NixieClock {
     public:
         NixieClock();
 
-        void setTime(uint8_t _hour, uint8_t _min, uint8_t _sec);
-        void setHour(uint8_t _hour);
-        void setMin(uint8_t _min);
-        void setSec(uint8_t sec);
-        void setTemp(int8_t entier, uint8_t decimal);
-
+        void setTime(uint8_t setHour, uint8_t setMin, uint8_t setSec);
+        void setHour(uint8_t setHour);
+        void setMin(uint8_t setMin);
+        void setSec(uint8_t setSec);
+        void setTemp(int8_t integer, uint8_t decimal);
         void setNixieOn();
         void setNixieOff();
 

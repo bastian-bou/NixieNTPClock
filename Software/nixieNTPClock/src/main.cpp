@@ -1,3 +1,7 @@
+#if !(__has_include("params.h"))
+#error "You need to add a params.h file in include folder with wifi_ssid and wifi_pwd const char*"
+#endif
+
 #include <Arduino.h>
 #include "debug.h"
 #include "params.h"
@@ -10,18 +14,17 @@
 #include <WiFi.h>
 #include "time.h"
 
-
 //Temperature sensor 
-#define TEMP  15
-//Tactile sensor
-#define TOUCH 4
-
+#define TEMP           15
+//Capacitive touch sensor
+#define TOUCH          4
+#define TOUCH_TRESHOLD 20
 
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(TEMP);
 
 // Pass our oneWire reference to Dallas Temperature sensor 
-DallasTemperature sensors(&oneWire);
+DallasTemperature sensor(&oneWire);
 // Create nixie object
 NixieClock nixie;
 
@@ -38,19 +41,18 @@ float temperature;
 
 void init_IO() {
 
-  sensors.begin();
+  sensor.begin();
 
 }
 /**
- * Return the temperature in celcius
- * return DEVICE_DISCONNECTED_C = -127 if there is an error
- **/
+ * Get the temperature from the sensor (only once) and show temp on nixies
+*/
 void showTemp() {
   if (isTimeGetTemp) {
-    sensors.requestTemperatures();
+    sensor.requestTemperatures();
     isTimeGetTemp = false;
     //temp in celcius
-    temperature = sensors.getTempCByIndex(0);
+    temperature = sensor.getTempCByIndex(0);
     //set the temperature in nixie object
     nixie.setTemp((int8_t)temperature, (uint8_t)((temperature - (int8_t)temperature) * 100));
   }
@@ -58,12 +60,24 @@ void showTemp() {
   nixie.showTemp();
 }
 
-boolean isTouch() {
-  if (touchRead(TOUCH) < 20) return true;
-  else return false;
+/**
+ * Test the capacitive button
+ * @return 1 if someone touch the button, 0 if anyone touch it
+*/
+boolean isTouch()
+{
+  if (touchRead(TOUCH) < TOUCH_TRESHOLD) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-void getNtpTime() {
+/**
+ * Get time from sntp server (synchronization)
+*/
+void getNtpTime()
+{
   struct tm timeInfo;
 
   getLocalTime(&timeInfo);
@@ -73,7 +87,11 @@ void getNtpTime() {
     (uint8_t)timeInfo.tm_sec);
 }
 
-void setup() {
+/**
+ * Arduino setup
+*/
+void setup()
+{
 
 #ifdef DEBUG
   Serial.begin(9600);
@@ -82,32 +100,6 @@ void setup() {
   init_IO();
 
   isTimeGetTemp = true;
-  /* If we touch the capacitive button (temp) at the begining, we start
-  ** the nixie test loop
-  ** We need to restart the device to stop this loop
-  */
-  // delay(500);
-  // if (isTouch())
-  // {
-  //   int64_t previousUs = getTimeUs();
-  //   testType test = DOT;
-  //   nixie.resetAll();
-  //   // Activate nixie tubes (digit)
-  //   nixie.setNixieOn();
-
-  //   debug_print("Start test on Nixie Clock\n");
-
-  //   while (1) {
-  //     nixie.testNixie(test);
-  //     // Every 20 seconds, we change the test
-  //     if ((getTimeUs() - previousUs) >= 20000000) {
-  //       previousUs = getTimeUs();
-  //       if (test == DOT) test = DIGITS_MULTIPLEX;
-  //       else if (test == DIGITS_MULTIPLEX) test = DIGITS_NORMAL;
-  //       else if (test == DIGITS_NORMAL) test = DOT;
-  //     }
-  //   }
-  // }
 
   WiFi.begin(wifi_ssid, wifi_pwd); // Connection to the network
   debug_print("Connecting to ");
@@ -146,7 +138,11 @@ void setup() {
     (uint8_t)timeInfo.tm_sec);
 }
 
-void loop() {
+/**
+ * Arduino loop
+*/
+void loop()
+{
   
   if (isTouch()) {
     debug_print("Touch temp\n");

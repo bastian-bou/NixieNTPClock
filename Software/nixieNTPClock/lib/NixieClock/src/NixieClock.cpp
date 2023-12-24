@@ -1,7 +1,7 @@
 #include "NixieClock.h"
 
 /**
- * Brief: Creation of the object, configure pinout, variables initialization 
+ * Creation of the object, configure pinout, variables initialization
  */ 
 NixieClock::NixieClock()
 {
@@ -20,60 +20,66 @@ NixieClock::NixieClock()
 
     resetAll();
 
-    previousNixieUpDuration = previousSec = previousGetTime = getTimeUs();
-    sec = min = hour = entierTemp = decTemp = 0;
-    isTimeToRefreshTime = false;
+    previous_nixie_up_duration = previous_sec = previous_get_time = GET_TIME_US();
+    sec = min = hour = integer_temp = dec_temp = 0;
     // Disable digit on nixie tubes
-    isNixieOn = false;
-
+    is_nixie_on = false;
+    // Set first state for state machine
     states = DOZENHOUR;
 }
 
 /**
- * Setter of all variables corresponding to the clock
+ * Setter of all clock variables
+ * @param setHour To set the hour value (i.e. from NTP)
+ * @param setMin To set the minute value (i.e. from NTP)
+ * @param setSec To set the second value (i.e. from NTP)
  */
-void NixieClock::setTime(uint8_t _hour, uint8_t _min, uint8_t _sec)
+void NixieClock::setTime(uint8_t setHour, uint8_t setMin, uint8_t setSec)
 {
-    hour = _hour;
-    min = _min;
-    sec = _sec;
-    previousSec = getTimeUs();
+    hour = setHour;
+    min = setMin;
+    sec = setSec;
+    // Update current tick time
+    previous_sec = GET_TIME_US();
 }
 
 /**
  * Setter on hour
+ * @param setHour To set the hour value (i.e. from NTP)
  */
-void NixieClock::setHour(uint8_t _hour)
+void NixieClock::setHour(uint8_t setHour)
 {
-    hour = _hour;
+    hour = setHour;
 }
 
 /**
  * Setter on minute
+ * @param setMin To set the minute value (i.e. from NTP)
  */
-void NixieClock::setMin(uint8_t _min)
+void NixieClock::setMin(uint8_t setMin)
 {
-    min = _min;
+    min = setMin;
 }
 
 /**
  * Setter on second
+ * @param setSec To set the second value (i.e. from NTP)
  */
-void NixieClock::setSec(uint8_t _sec)
+void NixieClock::setSec(uint8_t setSec)
 {
-    sec = _sec;
-    previousSec = getTimeUs();
+    sec = setSec;
+    previous_sec = GET_TIME_US();
 }
 
 /**
- * Setter on all variables for temperature
+ * Setter on all temperature variables
+ * @param integer The integer part of the temperature
+ * @param decimal The decimal part of the temperature
  */
-void NixieClock::setTemp(int8_t entier, uint8_t decimal)
+void NixieClock::setTemp(int8_t integer, uint8_t decimal)
 {
-    entierTemp = entier;
-    decTemp = decimal;
-    //after temperature, refresh clock with NTP server
-    isTimeToRefreshTime = true;
+    integer_temp = integer;
+    dec_temp = decimal;
 }
 
 /**
@@ -81,7 +87,7 @@ void NixieClock::setTemp(int8_t entier, uint8_t decimal)
  */
 void NixieClock::setNixieOn()
 {
-    isNixieOn = true;
+    is_nixie_on = true;
 }
 
 /**
@@ -89,16 +95,17 @@ void NixieClock::setNixieOn()
  */
 void NixieClock::setNixieOff()
 {
-    isNixieOn = false;
+    is_nixie_on = false;
 }
 
 /**
  * Write digit on nixie driver (BCD -> 10seg)
+ * @param digit Value from 0 to 9
  */
 void NixieClock::writeDigit(uint8_t digit)
 {
     uint8_t i;
-    if (isNixieOn) {
+    if (is_nixie_on) {
         for (i = 0; i < 4; i++) {
             digitalWrite(i + A, ((digit >> i) & 1) ? HIGH : LOW);
         }
@@ -111,6 +118,7 @@ void NixieClock::writeDigit(uint8_t digit)
 
 /**
  * Refresh nixie tubes without specific data (only clock or temperature)
+ * @param type Type of data to display (time, temperature, ...)
  */
 void NixieClock::refresh(dataDisplay type)
 {
@@ -120,77 +128,78 @@ void NixieClock::refresh(dataDisplay type)
 
 /**
  * Refresh nixie tubes with specific data
+ * @param type Type of data to display (time, temperature, ...)
+ * @param data Data in case of MANUAL type
  */
 void NixieClock::refresh(dataDisplay type, uint8_t data[4])
 {
     if (type == TEMP) {
         digitalWrite(P_UNIT_H, HIGH);
-        if (entierTemp < 0) digitalWrite (P_DOZ_H, HIGH);
-        else digitalWrite (P_DOZ_H, LOW);
+        if (integer_temp < 0) digitalWrite(P_DOZ_H, HIGH);
+        else digitalWrite(P_DOZ_H, LOW);
     }
     // State machine
     switch (states)
     {
     case DOZENHOUR:
-        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = getTimeUs();
+        if ((GET_TIME_US() - previous_nixie_up_duration) >= UP_NIXIE_DURATION_US) {
+            previous_nixie_up_duration = GET_TIME_US();
             digitalWrite(UNIT_M, LOW);
             NOP();
-            if (type == MANUAL)
-                writeDigit(data[0]);
-            else
+            if (type != MANUAL)
                 // dozen of hour
-                (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)entierTemp / 10);
+                (type == TIME) ? writeDigit(hour / 10) : writeDigit((uint8_t)integer_temp / 10);
+            else
+                writeDigit(data[0]);
             digitalWrite(DOZ_H, HIGH);
             states = UNITHOUR;
         }
         break;
     case UNITHOUR:
-        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = getTimeUs();
+        if ((GET_TIME_US() - previous_nixie_up_duration) >= UP_NIXIE_DURATION_US) {
+            previous_nixie_up_duration = GET_TIME_US();
             digitalWrite(DOZ_H, LOW);
             NOP();
-            if (type == MANUAL)
-                writeDigit(data[1]);
-            else
+            if (type != MANUAL)
                 // unit of hour or temp
-                (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)entierTemp % 10);
+                (type == TIME) ? writeDigit(hour % 10) : writeDigit((uint8_t)integer_temp % 10);
+            else
+                writeDigit(data[1]);
             digitalWrite(UNIT_H, HIGH);
             states = DOZENMIN;
         }
         break;
     case DOZENMIN:
-        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = getTimeUs();
+        if ((GET_TIME_US() - previous_nixie_up_duration) >= UP_NIXIE_DURATION_US) {
+            previous_nixie_up_duration = GET_TIME_US();
             digitalWrite(UNIT_H, LOW);
             NOP();
-            if (type == MANUAL)
-                writeDigit(data[2]);
-            else
+            if (type != MANUAL)
                 // dozen of minute
-                (type == TIME) ? writeDigit(min / 10) : writeDigit(decTemp / 10);
+                (type == TIME) ? writeDigit(min / 10) : writeDigit(dec_temp / 10);
+            else
+                writeDigit(data[2]);
             digitalWrite(DOZ_M, HIGH);
             states = UNITMIN;
         }
         break;
     case UNITMIN:
-        if ((getTimeUs() - previousNixieUpDuration) >= UP_NIXIE_DURATION_US) {
-            previousNixieUpDuration = getTimeUs();
+        if ((GET_TIME_US() - previous_nixie_up_duration) >= UP_NIXIE_DURATION_US) {
+            previous_nixie_up_duration = GET_TIME_US();
             digitalWrite(DOZ_M, LOW);
             NOP();
-            if (type == MANUAL)
-                writeDigit(data[3]);
-            else
+            if (type != MANUAL)
                 // unit of minute
-                (type == TIME) ? writeDigit(min % 10) : writeDigit(decTemp % 10);
+                (type == TIME) ? writeDigit(min % 10) : writeDigit(dec_temp % 10);
+            else
+                writeDigit(data[3]);
             digitalWrite(UNIT_M, HIGH);
             states = DOZENHOUR;
         }
         break;
     case WAITING:
-        if ((getTimeUs() - previousNixieUpDuration) >= TIMEOUT_BETWEEN_TWO_DIGITS_US) {
-            previousNixieUpDuration = getTimeUs();
-
+        if ((GET_TIME_US() - previous_nixie_up_duration) >= TIMEOUT_BETWEEN_TWO_DIGITS_US) {
+            previous_nixie_up_duration = GET_TIME_US();
         }
         break;
     default:
@@ -219,14 +228,15 @@ void NixieClock::resetAll()
 
 /**
  * Update time and refresh nixie tubes
+ * @return If it's a new hour, return true to update time (i.e. with NTP)
  */
 boolean NixieClock::showTime()
 {
     boolean isRefreshed = false;
 
-    if ((getTimeUs() - previousSec) >= SECOND_US) {
+    if ((GET_TIME_US() - previous_sec) >= SECOND_US) {
         // 1 second
-        previousSec = getTimeUs();
+        previous_sec = GET_TIME_US();
         sec++;
         // toggle unit hour comma (point)
         digitalWrite(P_UNIT_H, digitalRead(P_UNIT_H) ? LOW : HIGH);
@@ -261,8 +271,8 @@ void NixieClock::doWaitingAnim()
     static uint8_t position = 0;
     static boolean direction = true;
 
-    if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
-        previousGetTime = getTimeUs();
+    if ((GET_TIME_US() - previous_get_time) >= NIXIE_ANIM_US) {
+        previous_get_time = GET_TIME_US();
         switch (position) {
             case 0:
                 digitalWrite(P_DOZ_H, direction ? HIGH : LOW);
@@ -285,6 +295,10 @@ void NixieClock::doWaitingAnim()
     refresh(MANUAL);
 }
 
+/**
+ * Test function for nixie clock with animations
+ * @param test Type of animation for test
+*/
 void NixieClock::testNixie(testType test)
 {
     static uint8_t digitValue = 0;
@@ -297,8 +311,8 @@ void NixieClock::testNixie(testType test)
         break;
 
     case DIGITS_MULTIPLEX:
-        if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
-            previousGetTime = getTimeUs();
+        if ((GET_TIME_US() - previous_get_time) >= NIXIE_ANIM_US) {
+            previous_get_time = GET_TIME_US();
             digitValue++;
             if (digitValue > 9) 
                 digitValue = 0;
@@ -308,8 +322,8 @@ void NixieClock::testNixie(testType test)
         break;
 
     case DIGITS_NORMAL:
-        if ((getTimeUs() - previousGetTime) >= NIXIE_ANIM_US) {
-            previousGetTime = getTimeUs();
+        if ((GET_TIME_US() - previous_get_time) >= NIXIE_ANIM_US) {
+            previous_get_time = GET_TIME_US();
             switch (position)
             {
             case 0:
